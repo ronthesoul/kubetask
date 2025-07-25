@@ -7,8 +7,8 @@ spec:
     storage: 2Gi
   accessModes:
     - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ""           
   nfs:
     server: 192.168.49.1
-    path: /nfs
-  storageClassName: nfs-storage
-  persistentVolumeReclaimPolicy: Retain
+    path: /srv/nfs/shared

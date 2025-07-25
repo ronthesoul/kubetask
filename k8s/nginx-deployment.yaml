@@ -44,6 +44,8 @@ spec:
         volumeMounts:
           - mountPath: /usr/share/nginx/html
             name: nfs-volume
+          - mountPath: /etc/nginx/conf.d/
+            name: config
         securityContext:
           allowPrivilegeEscalation: false
           privileged: false
@@ -51,3 +53,6 @@ spec:
         - name: nfs-volume
           persistentVolumeClaim:
             claimName: nfs-pvc
+        - name: config
+          configMap:
+            name: nginx-conf
