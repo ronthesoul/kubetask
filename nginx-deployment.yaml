@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-app
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+        runAsUser: 1001
+        runAsGroup: 1001
+        runAsNonRoot: true
+      terminationGracePeriodSeconds: 600
+      containers:
+      - name: nginx
+        image: cgr.dev/chainguard/nginx
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+        resources:
+          limits:
+            memory: "500Mi"
+          requests:
+            memory: "500Mi"
+            cpu: "1"
+        volumeMounts:
+          - mountPath: /usr/share/nginx/html
+            name: nfs-volume
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+      volumes:
+        - name: nfs-volume
+          persistentVolumeClaim:
+            claimName: nfs-pvc
