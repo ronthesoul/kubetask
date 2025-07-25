@@ -29,27 +29,22 @@ main() {
         logv2 error "Root check failed"
         exit 1
     fi
-    end_task "Root check"
     logv2 success "Root privileges confirmed"
 
     start_task "Installing nfs-kernel-server"
     if distro_check_and_install nfs-kernel-server > "$NULL" 2>&1; then
-        end_task "NFS server installation"
         logv2 success "NFS server was successfully installed"
     else
-        fail_task "NFS server installation"
         logv2 error "NFS server installation failed"
         exit 1
     fi
 
     start_task "Creating shared directory at $NFSFILE"
     mkdir -p "$NFSFILE"
-    end_task "Shared directory created"
     logv2 success "Created directory at $NFSFILE"
 
     start_task "Creating index.html file"
     echo "NFS StorageClass To Container" > "$NFSFILE/index.html"
-    end_task "index.html created"
     logv2 success "index.html created at $NFSFILE"
 
     start_task "Exporting NFS share"
@@ -57,12 +52,10 @@ main() {
      echo "$NFSFILE *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports > /dev/null
     fi   
     sudo exportfs -rav >> "$LOGFILE" 2>&1
-    end_task "NFS export configuration applied"
     logv2 success "Exported $NFSFILE to /etc/exports"
 
     start_task "Restarting nfs-kernel-server"
     sudo systemctl restart nfs-kernel-server >> "$LOGFILE" 2>&1
-    end_task "NFS service restarted"
     logv2 success "NFS service restarted"
 
     logv2 success "✅ NFS setup complete!"
