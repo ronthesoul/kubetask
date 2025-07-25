@@ -120,18 +120,13 @@ Below is the directory structure of the `kubetask` repository:
 
 ```
 kubetask/
-├── base/
+├── k8s/
 │   ├── deployment.yaml       # Nginx deployment configuration
 │   ├── service.yaml          # Service configuration for Nginx
 │   ├── nfs-pv.yaml           # PersistentVolume for NFS
 │   ├── nfs-pvc.yaml          # PersistentVolumeClaim for NFS
 │   └── kustomization.yaml    # Kustomize configuration for base resources
-├── overlays/
-│   ├── dev/
-│   │   └── kustomization.yaml  # Optional: Dev environment customizations
-│   └── prod/
-│       └── kustomization.yaml  # Optional: Prod environment customizations
-└── kustomization.yaml        # Root Kustomize configuration
+├── nfs-setup.sh              # Script to set up NFS server and share
 ```
 
 ### File Descriptions
@@ -140,8 +135,6 @@ kubetask/
 - **base/service.yaml**: Exposes the Nginx application via a Kubernetes service.
 - **base/nfs-pv.yaml**: Configures the PersistentVolume for the NFS share.
 - **base/nfs-pvc.yaml**: Defines the PersistentVolumeClaim to request NFS storage.
-- **base/kustomization.yaml**: Kustomize configuration referencing the base resources.
-- **overlays/**: Optional environment-specific customizations (e.g., `dev` or `prod`).
 - **kustomization.yaml**: Root Kustomize file for applying resources.
 
 ## Troubleshooting
