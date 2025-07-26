@@ -9,7 +9,7 @@
 LOGFILE=/var/log/nfs-setup.log
 NFSFILE=/srv/nfs/shared
 NULL=/dev/null
-
+EXPFILE=/etc/exports
 library=./lib/negbook.sh
 mkdir -p ./lib
 if [[ ! -f "$library" ]]; then
@@ -48,8 +48,8 @@ main() {
     logv2 success "index.html created at $NFSFILE"
 
     start_task "Exporting NFS share"
-    if ! grep -q "$NFSFILE" /etc/exports; then
-     echo "$NFSFILE *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a /etc/exports > /dev/null
+    if ! grep -q "$NFSFILE" "$EXPFILE"; then
+     echo "$NFSFILE *(rw,sync,no_subtree_check,no_root_squash)" | sudo tee -a "$EXPFILE" > "$NULL"
     fi   
     sudo exportfs -rav >> "$LOGFILE" 2>&1
     logv2 success "Exported $NFSFILE to /etc/exports"
@@ -63,4 +63,4 @@ main() {
 
 main "$@"
 rm -rf "$library"
-rmdir ./lib 2>/dev/null
+rmdir ./lib 2>"$NULL"
